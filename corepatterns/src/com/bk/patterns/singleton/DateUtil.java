@@ -1,9 +1,11 @@
 package com.bk.patterns.singleton;
 
-public class DateUtil {
+import java.io.Serializable;
+
+public class DateUtil implements Serializable {
 
     // Step 3
-    private static DateUtil instance;
+    private static volatile DateUtil instance;
 
     // Step 1
     private DateUtil() {
@@ -12,8 +14,17 @@ public class DateUtil {
     // Step 2
     public static DateUtil getInstance() {
         if (instance == null) {
-            instance = new DateUtil();
+            synchronized (DateUtil.class) {
+                if (instance == null) {
+                    instance = new DateUtil();
+                }
+            }
         }
         return instance;
+    }
+
+    public Object readResolve()
+    {
+        return  instance;
     }
 }
